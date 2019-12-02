@@ -1,0 +1,14 @@
+{
+  "name": "day_2",
+  "version": "1.0.0",
+  "description": "Advent Of Code 2019 (Day 2)",
+  "main": "index.js",
+  "author": "Angus Fraser",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  }
+}

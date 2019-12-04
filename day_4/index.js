@@ -13,7 +13,26 @@ function isInOrder(num) {
 function hasAdjacents(num) {
   const str = `${num}`;
 
-  return str.match(/(\d)\1/g);
+  let i = 0;
+
+  while (i < str.length - 1) {
+    if (str[i] === str[i + 1]) {
+      if (str[i] !== str[i + 2]) {
+        return true;
+      }
+      let newIndex = i;
+
+      while (str[newIndex] === str[i]) {
+        newIndex += 1;
+      }
+
+      i = newIndex;
+    } else {
+      i += 1;
+    }
+  }
+
+  return false;
 }
 
 function isValidPassword(num) {

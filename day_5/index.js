@@ -39,11 +39,41 @@ function run(i) {
             break;
         case 2: array[param3] = op1 * op2;
             break;
-        case 3: array[param1] = 1;
+        case 3: array[param1] = 5;
             jump = 2;
             break;
         case 4: console.log(array[param1]);
             jump = 2;
+            break;
+        case 5:
+            if (op1) {
+                programCounter = op2;
+                jump = 0;
+            } else {
+                jump = 3;
+            }
+            break;
+        case 6:
+            if (!op1) {
+                programCounter = op2;
+                jump = 0;
+            } else {
+                jump = 3;
+            }
+            break;
+        case 7:
+            if (op1 < op2) {
+                array[param3] = 1;
+            } else {
+                array[param3] = 0;
+            }
+            break;
+        case 8:
+            if (op1 === op2) {
+                array[param3] = 1;
+            } else {
+                array[param3] = 0;
+            }
             break;
         default: break;
         }

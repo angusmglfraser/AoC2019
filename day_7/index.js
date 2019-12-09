@@ -11,11 +11,12 @@ const JUMP_IF_FALSE = 6;
 const JUMP_IF_LESS = 7;
 const JUMP_IF_EQUAL = 8;
 
-function run(i, inputs) {
-    let inputIndex = 0;
+function* run(i, input) {
     const array = [...i];
     let programCounter = 0;
     let result = 0;
+
+    let usedFirstInput = false;
 
     while (array[programCounter] !== 99) {
         const instructionCode = array[programCounter];
@@ -51,12 +52,16 @@ function run(i, inputs) {
             array[param3] = op1 * op2;
             break;
         case READ:
-            array[param1] = inputs[inputIndex];
-            inputIndex++;
+            if (!usedFirstInput) {
+                array[param1] = input;
+                usedFirstInput = true;
+            } else {
+                array[param1] = yield;
+            }
             jump = 2;
             break;
         case OUTPUT:
-            console.log(array[param1]);
+            yield array[param1];
             result = array[param1];
             jump = 2;
             break;
@@ -96,6 +101,7 @@ function run(i, inputs) {
         programCounter += jump;
     }
 
+
     return result;
 }
 
@@ -131,12 +137,31 @@ function permutations(array) {
 }
 
 
-const orders = permutations([0, 1, 2, 3, 4]);
+const orders = permutations([5, 6, 7, 8, 9]);
 
 let max = -Infinity;
 orders.forEach((order) => {
-    const val = runWithInputSequence(order);
-    max = Math.max(val, max);
+    const amplifiers = order.map((x) => run(arr, x));
+    // amplifiers.forEach((amp) => {
+    //     amp.next();
+    // });
+    let i = 0;
+    let result = 0;
+    let value;
+    let done;
+
+    const ampResults = [];
+
+    while (!done) {
+        ({ value, done } = amplifiers[i % order.length].next(result));
+        if (value !== undefined) {
+            result = value;
+            ampResults[i % order.length] = value;
+            i++;
+        }
+    }
+
+    max = Math.max(ampResults[order.length - 1], max);
 });
 
 console.log({ max });

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const term = require('terminal-kit').terminal;
 
 const input = fs.readFileSync('input.txt', 'utf-8').split('').map(Number);
 
@@ -11,18 +12,25 @@ for (let i = 0; i < input.length; i += WIDTH * HEIGHT) {
     layers.push(input.slice(i, i + WIDTH * HEIGHT));
 }
 
-let minArray = layers[0];
-let minLength = Infinity;
+const image = Array(WIDTH * HEIGHT).fill(2);
+
+layers.reverse();
 
 layers.forEach((layer) => {
-    const subArray = layer.filter((x) => x === 0);
-    if (subArray.length < minLength) {
-        minLength = subArray.length;
-        minArray = layer;
-    }
+    layer.forEach((pixel, i) => {
+        if ([0, 1].includes(pixel)) {
+            image[i] = pixel;
+        }
+    });
 });
 
-const ones = minArray.filter((x) => x === 1).length;
-const twos = minArray.filter((x) => x === 2).length;
-
-console.log({ result: ones * twos });
+for (let i = 0; i < image.length; i++) {
+    if (i % WIDTH === 0) {
+        term('\n');
+    }
+    if (image[i] === 0) {
+        term.blue('█');
+    } else if (image[i] === 1) {
+        term.red('█');
+    }
+}

@@ -62,7 +62,7 @@ function run(i) {
             array[writeAddr] = op1 * op2;
             break;
         case READ:
-            array[writeAddr] = 1;
+            array[writeAddr] = 2;
             jump = 2;
             break;
         case OUTPUT:

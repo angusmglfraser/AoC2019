@@ -1,0 +1,21 @@
+{
+  "name": "AoC2019",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:angusmglfraser/AoC2019.git",
+  "author": "Angus Fraser <angus.fraser@mangahigh.com>",
+  "license": "MIT",
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.19.1"
+  },
+  "scripts": {
+    "test": "mocha --require babel-core/register ./*.test.js"
+  }
+}

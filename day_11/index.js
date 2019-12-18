@@ -3,7 +3,7 @@ const IntCode = require('../IntCode');
 
 const array = fs.readFileSync('input.txt', 'utf-8').split(',').map(Number);
 
-const computer = new IntCode(array, [0]);
+const computer = new IntCode(array);
 
 const BLACK = 0;
 const WHITE = 1;
@@ -18,69 +18,81 @@ const visited = {
     [`${x},${y}`]: BLACK,
 };
 
-let gotColour = false;
+const gotColour = false;
 
 let direction = 'up';
 
 while (!computer.halted) {
-    computer.step();
+    if (visited[`${x},${y}`] === undefined) {
+        visited[`${x},${y}`] = BLACK;
+    }
+    computer.addInput(visited[`${x},${y}`]);
 
-    if (computer.output !== undefined) {
-        if (!gotColour) {
-            const colour = computer.output;
-            visited[`${x},${y}`] = colour;
-            gotColour = true;
-            console.log('here');
-        } else {
-            console.log('there');
-            gotColour = false;
-            const instruction = computer.output;
+    while (computer.output === undefined) {
+        computer.step();
+    }
 
-            switch (instruction) {
-            case TURN_RIGHT:
-                direction = {
-                    up: 'right',
-                    right: 'down',
-                    down: 'left',
-                    left: 'up',
-                }[direction];
-                break;
+    // get colour
 
-            case TURN_LEFT:
-                direction = {
-                    up: 'left',
-                    left: 'down',
-                    down: 'right',
-                    right: 'up',
-                }[direction];
-                break;
+    const { output: colour } = computer;
+    computer.output = undefined;
 
-            default: break;
-            }
+    visited[`${x},${y}`] = colour;
 
-            computer.addInput(visited[`${x},${y}`]);
+    while (computer.output === undefined) {
+        computer.step();
+    }
 
-            switch (direction) {
-            case 'up':
-                y++; break;
+    // get direction
 
-            case 'down':
-                y--; break;
+    const { output: instruction } = computer;
+    computer.output = undefined;
 
-            case 'left':
-                x--; break;
+    switch (instruction) {
+    case TURN_LEFT:
+        direction = {
+            up: 'left',
+            left: 'down',
+            down: 'right',
+            right: 'up',
+        }[direction];
+        break;
 
-            case 'right':
-                x++; break;
+    case TURN_RIGHT:
+        direction = {
+            up: 'right',
+            right: 'down',
+            down: 'left',
+            left: 'up',
+        }[direction];
+        break;
 
-            default: break;
-            }
+    default: break;
+    }
 
-            if (visited[`${x},${y}`] === undefined) {
-                visited[`${x},${y}`] = BLACK;
-            }
-        }
+    switch (direction) {
+    case 'up':
+        y++;
+        break;
 
-        computer.output = undefined;
+    case 'down':
+        y--;
+        break;
+
+    case 'left':
+        x--;
+        break;
+
+    case 'right':
+        x++;
+        break;
+
+    default: break;
+    }
+
+    while (!(computer.halted || computer.waiting)) {
+        computer.step();
     }
 }
+
+console.log(Object.keys(visited).length);

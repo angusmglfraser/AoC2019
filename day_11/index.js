@@ -1,4 +1,5 @@
 const fs = require('fs');
+const term = require('terminal-kit').terminal;
 const IntCode = require('../IntCode');
 
 const array = fs.readFileSync('input.txt', 'utf-8').split(',').map(Number);
@@ -15,14 +16,24 @@ let x = 0;
 let y = 0;
 
 const visited = {
-    [`${x},${y}`]: BLACK,
+    [`${x},${y}`]: WHITE,
 };
 
-const gotColour = false;
+let xMin = Infinity;
+let yMin = Infinity;
+
+let xMax = -Infinity;
+let yMax = -Infinity;
+
 
 let direction = 'up';
 
 while (!computer.halted) {
+    xMin = Math.min(x, xMin);
+    xMax = Math.max(x, xMax);
+    yMin = Math.min(y, yMin);
+    yMax = Math.max(y, yMax);
+
     if (visited[`${x},${y}`] === undefined) {
         visited[`${x},${y}`] = BLACK;
     }
@@ -96,3 +107,15 @@ while (!computer.halted) {
 }
 
 console.log(Object.keys(visited).length);
+
+
+for (let yi = yMax - yMin; yi >= 0; yi--) {
+    for (let xi = 0; xi <= xMax - xMin; xi++) {
+        if (visited[`${xi + xMin},${yi + yMin}`] === WHITE) {
+            term.white('█');
+        } else {
+            term.black('█');
+        }
+    }
+    term('\n');
+}

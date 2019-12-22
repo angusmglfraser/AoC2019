@@ -23,6 +23,14 @@ let paddleX = 0;
 let ballX = 0;
 let newBall = 0;
 
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+}
+
 while (!computer.halted) {
     computer.bigStep();
 
@@ -43,7 +51,7 @@ while (!computer.halted) {
     if (x === -1 && y === 0) {
         score = block;
         terminal.saveCursor();
-        terminal.moveTo(80, 80);
+        terminal.moveTo(1, 30);
         terminal(score);
         terminal.restoreCursor();
     } else {
@@ -83,6 +91,8 @@ while (!computer.halted) {
     }
 
     computer.bigStep();
+
+    sleep(10);
 }
 
 console.log({ score });

@@ -13,7 +13,7 @@ const IMMEDIATE = 1;
 const ADDRESS = 0;
 const RELATIVE = 2;
 
-function IntCode(program = [], inputArray = []) {
+function IntCode(program = [], inputArray = [], options = {}) {
     const computer = {
         arr: program.slice(),
         input: inputArray,
@@ -26,6 +26,8 @@ function IntCode(program = [], inputArray = []) {
         halted: false,
 
         waiting: false,
+
+        suppressOutput: options.suppressOutput || false,
 
         getValue(index, mode = ADDRESS) {
             let readAddr;
@@ -113,7 +115,9 @@ function IntCode(program = [], inputArray = []) {
 
                 case OUTPUT:
                     this.output = this.getValue(param1, mode1);
-                    console.log(this.output);
+                    if (!this.suppressOutput) {
+                        console.log(this.output);
+                    }
                     this.programCounter += 2;
                     break;
 
@@ -178,6 +182,12 @@ function IntCode(program = [], inputArray = []) {
             }
 
             return this.output;
+        },
+
+        bigStep() {
+            while (!(this.halted || this.waiting || this.output !== undefined)) {
+                this.step();
+            }
         },
     };
 
